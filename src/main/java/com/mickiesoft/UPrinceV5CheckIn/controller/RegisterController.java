@@ -31,7 +31,7 @@ public class RegisterController {
     private static RegisterPresencesRequest requestGlobal;
     private static RegisterPresencesRequest requestGlobalLimosa;
 
-   // private static final URL WSDL_URL = ClassLoader.getSystemResource("wsdl/presenceregistration/v1/PresenceRegistration_v1.wsdl");
+    private static final URL WSDL_URL = ClassLoader.getSystemResource("wsdl/presenceregistration/v1/PresenceRegistration_v1.wsdl");
 
     private DateTime date;
 
@@ -91,7 +91,7 @@ public class RegisterController {
     }
 
     private void initProxy() {
-        presenceService = new PresenceRegistrationService();
+        presenceService = new PresenceRegistrationService(WSDL_URL);
         port = presenceService.getPresenceRegistrationSOAP11();
         requestGlobal = new RegisterPresencesRequest();
         // next three lines are optional, they dump the SOAP request/response
