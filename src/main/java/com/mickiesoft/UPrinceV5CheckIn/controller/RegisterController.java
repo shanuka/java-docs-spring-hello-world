@@ -6,10 +6,9 @@ import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.interceptor.LoggingInInterceptor;
 import org.apache.cxf.interceptor.LoggingOutInterceptor;
 import org.joda.time.DateTime;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeConstants;
@@ -30,6 +29,7 @@ public class RegisterController {
 //
 //    private static RegisterPresencesRequest requestGlobal;
 //    private static RegisterPresencesRequest requestGlobalLimosa;
+        private static final Logger LOG = (Logger) LoggerFactory.getLogger(RegisterController.class);
 
     private static final URL WSDL_URL = ClassLoader.getSystemResource("wsdl/presenceregistration/v1/PresenceRegistration_v1.wsdl");
 
@@ -39,6 +39,7 @@ public class RegisterController {
 
 
     @RequestMapping(method = RequestMethod.GET, value = "/api/registerEmployee/{inss}/{workplaceid}/{companyid}")
+    @ResponseStatus(HttpStatus.OK)
     public RegisterPresencesResponse completeRegisterRequest(@PathVariable("inss") String inss, @PathVariable("workplaceid") String workplaceID, @PathVariable("companyid") String companyID)  {
        // checkTime();
 
@@ -77,6 +78,9 @@ public class RegisterController {
             try {
                 System.out.println(" response = port.registerPresences(requestGlobal);");
                 response = port.registerPresences(requestGlobal);
+
+                LOG.info("Successfully called SOAP service!");
+
             } catch (SystemError ex) {
                 return new RegisterPresencesResponse();
             } catch (BusinessError ex) {
