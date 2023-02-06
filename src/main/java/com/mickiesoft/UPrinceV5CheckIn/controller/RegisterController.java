@@ -58,12 +58,15 @@ public class RegisterController {
         individualRequest.setRegistrationDate(xmlDate);
         requestGlobal.getPresenceRegistrationRequest().add(individualRequest);
 
+        System.out.println("requestGlobal");
+
         RegisterPresencesResponse response = new RegisterPresencesResponse();
+
         if (port == null) {
             return response;
         } else {
             try {
-
+                System.out.println(" response = port.registerPresences(requestGlobal);");
                 response = port.registerPresences(requestGlobal);
             } catch (SystemError ex) {
                 return new RegisterPresencesResponse();
