@@ -24,12 +24,12 @@ import java.util.logging.Logger;
 @RestController
 public class RegisterController {
 
-    private static PresenceRegistrationPortType port;
-    private static RegisterPresencesRequest request;
-    private static SearchPresencesRequest searchRequest;
-
-    private static RegisterPresencesRequest requestGlobal;
-    private static RegisterPresencesRequest requestGlobalLimosa;
+//    private static PresenceRegistrationPortType port;
+//    private static RegisterPresencesRequest request;
+//    private static SearchPresencesRequest searchRequest;
+//
+//    private static RegisterPresencesRequest requestGlobal;
+//    private static RegisterPresencesRequest requestGlobalLimosa;
 
     private static final URL WSDL_URL = ClassLoader.getSystemResource("wsdl/presenceregistration/v1/PresenceRegistration_v1.wsdl");
 
@@ -40,7 +40,15 @@ public class RegisterController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/api/registerEmployee/{inss}/{workplaceid}/{companyid}")
     public RegisterPresencesResponse completeRegisterRequest(@PathVariable("inss") String inss, @PathVariable("workplaceid") String workplaceID, @PathVariable("companyid") String companyID)  {
-        checkTime();
+       // checkTime();
+
+        presenceService = new PresenceRegistrationService(WSDL_URL);
+        PresenceRegistrationPortType port = presenceService.getPresenceRegistrationSOAP11();
+        RegisterPresencesRequest requestGlobal = new RegisterPresencesRequest();
+        // next three lines are optional, they dump the SOAP request/response
+        Client client = ClientProxy.getClient(port);
+        client.getInInterceptors().add(new LoggingInInterceptor());
+        client.getOutInterceptors().add(new LoggingOutInterceptor());
 
         PresenceRegistrationSubmitType individualRequest = new PresenceRegistrationSubmitType();
 
@@ -58,11 +66,12 @@ public class RegisterController {
         individualRequest.setRegistrationDate(xmlDate);
         requestGlobal.getPresenceRegistrationRequest().add(individualRequest);
 
-        System.out.println("requestGlobal");
+        System.out.println("requestGlobal ");
 
         RegisterPresencesResponse response = new RegisterPresencesResponse();
 
         if (port == null) {
+            System.out.println("requestGlobal port null");
             return response;
         } else {
             try {
@@ -78,28 +87,28 @@ public class RegisterController {
     }
 
 
-    private void checkTime() {
-        if (date == null) {
-            date = new DateTime();
-            initProxy();
-            return;
-        }
-        DateTime dateNow = new DateTime();
-
-        // get hours
-        double hours = (dateNow.getMillis() - date.getMillis()) / 1000 / 60 / 60;
-        //if (hours > 1) {
-            initProxy();
-       // }
-    }
-
-    private void initProxy() {
-        presenceService = new PresenceRegistrationService(WSDL_URL);
-        port = presenceService.getPresenceRegistrationSOAP11();
-        requestGlobal = new RegisterPresencesRequest();
-        // next three lines are optional, they dump the SOAP request/response
-        Client client = ClientProxy.getClient(port);
-        client.getInInterceptors().add(new LoggingInInterceptor());
-        client.getOutInterceptors().add(new LoggingOutInterceptor());
-    }
+//    private void checkTime() {
+//        if (date == null) {
+//            date = new DateTime();
+//            initProxy();
+//            return;
+//        }
+//        DateTime dateNow = new DateTime();
+//
+//        // get hours
+//        double hours = (dateNow.getMillis() - date.getMillis()) / 1000 / 60 / 60;
+//        //if (hours > 1) {
+//            initProxy();
+//       // }
+//    }
+//
+//    private void initProxy() {
+//        presenceService = new PresenceRegistrationService(WSDL_URL);
+//        port = presenceService.getPresenceRegistrationSOAP11();
+//        requestGlobal = new RegisterPresencesRequest();
+//        // next three lines are optional, they dump the SOAP request/response
+//        Client client = ClientProxy.getClient(port);
+//        client.getInInterceptors().add(new LoggingInInterceptor());
+//        client.getOutInterceptors().add(new LoggingOutInterceptor());
+//    }
 }
