@@ -1,0 +1,82 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jaxws="http://cxf.apache.org/jaxws"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+   http://www.springframework.org/schema/beans/spring-beans.xsd
+   http://cxf.apache.org/jaxws
+   http://cxf.apache.org/schemas/jaxws.xsd">
+
+    <bean name="callbackHandler"
+          class="com.mickiesoft.UPrinceV5CheckIn.platformintegrationconsumertest.impl.CredentialCallbackHandler">
+        <!-- This password will be used to decrypt the private key in the keystore -->
+        <property name="defaultPassword" value="EmEQ9Mhr4rrYE5"/>
+        <!-- This expeditor number will be used in the claim sent to STS -->
+        <property name="defaultExpeditorNumber" value="115855"/>
+    </bean>
+
+    <bean name="callbackHandler2"
+          class="com.mickiesoft.UPrinceV5CheckIn.platformintegrationconsumertest.impl.CredentialCallbackHandler">
+        <!-- This password will be used to decrypt the private key in the keystore -->
+        <property name="defaultPassword" value="EmEQ9Mhr4rrYE5"/>
+        <!-- This expeditor number will be used in the claim sent to STS -->
+        <property name="defaultExpeditorNumber" value="115855"/>
+    </bean>
+
+    <jaxws:client
+            name="{http://socialsecurity.be/platformintegrationconsumertest/v1}PlatformIntegrationConsumerTestSOAP11"
+            createdFromAPI="true">
+        <jaxws:properties>
+            <entry key="schema-validation-enabled" value="true" />
+            <entry key="ws-security.callback-handler" value-ref="callbackHandler"/>
+            <entry key="ws-security.signature.properties" value="x509.properties"/>
+            <entry key="ws-security.asymmetric.signature.algorithm" value="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
+            <entry key="ws-security.sts.client">
+                <bean id="stsClient" class="org.apache.cxf.ws.security.trust.STSClient">
+                    <constructor-arg ref="cxf"/>
+                    <property name="wsdlLocation" value="wsdl/sts/SecurityTokenService-X509_v2.wsdl"/>
+                    <property name="serviceName" value="{http://socialsecurity.be/sts/v2}SecurityTokenService"/>
+                    <property name="endpointName" value="{http://socialsecurity.be/sts/v2}SecurityTokenServiceSOAP11"/>
+                    <property name="tokenType" value="http://docs.oasis-open.org/wss/oasis-wss-saml-token-profile-1.1#SAMLV1.1"/>
+                    <property name="enableAppliesTo" value="false"/>
+                    <property name="sendKeyType" value="false"/>
+                    <property name="sendRenewing" value="false"/>
+                    <property name="allowRenewing" value="false"/>
+                    <property name="claimsCallbackHandler" ref="callbackHandler"/>
+                </bean>
+            </entry>
+        </jaxws:properties>
+        <jaxws:outInterceptors>
+            <bean class="com.mickiesoft.UPrinceV5CheckIn.platformintegrationconsumertest.impl.SoapActionInterceptor"/>
+        </jaxws:outInterceptors>
+    </jaxws:client>
+
+    <jaxws:client
+            name="{http://socialsecurity.be/presenceregistration/v1}PresenceRegistrationSOAP11"
+            createdFromAPI="true">
+
+        <jaxws:properties>
+            <entry key="schema-validation-enabled" value="false" />
+            <entry key="ws-security.callback-handler" value-ref="callbackHandler"/>
+            <entry key="ws-security.signature.properties" value="x509.properties"/>
+            <entry key="ws-security.asymmetric.signature.algorithm" value="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
+            <entry key="ws-security.sts.client">
+                <bean id="stsClient" class="org.apache.cxf.ws.security.trust.STSClient">
+                    <constructor-arg ref="cxf"/>
+                    <property name="wsdlLocation" value="wsdl/sts/SecurityTokenService-X509_v2.wsdl"/>
+                    <property name="serviceName" value="{http://socialsecurity.be/sts/v2}SecurityTokenService"/>
+                    <property name="endpointName" value="{http://socialsecurity.be/sts/v2}SecurityTokenServiceSOAP11"/>
+                    <property name="tokenType" value="http://docs.oasis-open.org/wss/oasis-wss-saml-token-profile-1.1#SAMLV1.1"/>
+                    <property name="enableAppliesTo" value="false"/>
+                    <property name="sendKeyType" value="false"/>
+                    <property name="sendRenewing" value="false"/>
+                    <property name="allowRenewing" value="false"/>
+                    <property name="claimsCallbackHandler" ref="callbackHandler"/>
+                </bean>
+            </entry>
+        </jaxws:properties>
+        <jaxws:outInterceptors>
+            <bean class="com.mickiesoft.UPrinceV5CheckIn.platformintegrationconsumertest.impl.PresentSoapActionInterceptor"/>
+        </jaxws:outInterceptors>
+    </jaxws:client>
+
+
+</beans>

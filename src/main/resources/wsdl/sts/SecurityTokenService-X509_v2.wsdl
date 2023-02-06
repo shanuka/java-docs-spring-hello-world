@@ -1,0 +1,95 @@
+<wsdl:definitions name="SecurityTokenService" targetNamespace="http://socialsecurity.be/sts/v2"
+  xmlns:tns="http://socialsecurity.be/sts/v2"
+  xmlns:wst="http://docs.oasis-open.org/ws-sx/ws-trust/200512"
+  xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
+  xmlns:wssutil="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
+  xmlns:soap11="http://schemas.xmlsoap.org/wsdl/soap/"
+  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+
+  <wsp:UsingPolicy wssutil:Required="true" />
+  <wsp:Policy wssutil:Id="Wssp1.2-2007-Wss1.1-X509" xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702">
+    <sp:AsymmetricBinding>
+      <wsp:Policy>
+        <sp:InitiatorToken>
+          <wsp:Policy>
+            <sp:X509Token sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+              <wsp:Policy>
+                <sp:RequireThumbprintReference />
+                <sp:WssX509V3Token11 />
+              </wsp:Policy>
+            </sp:X509Token>
+          </wsp:Policy>
+        </sp:InitiatorToken>
+        <sp:RecipientToken>
+          <wsp:Policy>
+            <sp:X509Token sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/Never">
+              <wsp:Policy>
+                <sp:RequireThumbprintReference />
+                <sp:WssX509V3Token11 />
+              </wsp:Policy>
+            </sp:X509Token>
+          </wsp:Policy>
+        </sp:RecipientToken>
+        <sp:AlgorithmSuite>
+          <wsp:Policy>
+            <sp:Basic256Sha256 />
+          </wsp:Policy>
+        </sp:AlgorithmSuite>
+        <sp:Layout>
+          <wsp:Policy>
+            <sp:Lax />
+          </wsp:Policy>
+        </sp:Layout>
+        <sp:IncludeTimestamp />
+        <sp:ProtectTokens />
+        <sp:OnlySignEntireHeadersAndBody />
+      </wsp:Policy>
+    </sp:AsymmetricBinding>
+    <sp:SignedParts>
+      <sp:Body />
+    </sp:SignedParts>
+    <sp:Wss11>
+      <wsp:Policy>
+        <sp:MustSupportRefKeyIdentifier />
+        <sp:MustSupportRefIssuerSerial />
+        <sp:MustSupportRefThumbprint />
+        <sp:MustSupportRefEncryptedKey />
+        <sp:RequireSignatureConfirmation />
+      </wsp:Policy>
+    </sp:Wss11>
+  </wsp:Policy>
+
+ <wsdl:import namespace="http://docs.oasis-open.org/ws-sx/ws-trust/200512" location="ws-trust-1.3.wsdl" />
+
+<!-- this is the WS-I BP-compliant way to import a schema -->
+  <wsdl:types>
+    <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:import namespace="http://docs.oasis-open.org/ws-sx/ws-trust/200512" schemaLocation="ws-trust-1.3-errata-cd-01.xsd" />
+      <xs:import namespace="http://schemas.xmlsoap.org/ws/2006/12/authorization" schemaLocation="external/ws-authorization.xsd" />
+      <xs:import namespace="http://docs.oasis-open.org/wsfed/authorization/200706" schemaLocation="external/ws-authorization-1.2.xsd" />
+    </xs:schema>
+  </wsdl:types>
+
+  <wsdl:binding name="SecurityTokenServiceSOAPBinding" type="wst:SecurityTokenService">
+    <soap11:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="RequestSecurityToken">
+      <soap11:operation soapAction="RequestSecurityToken"/>
+      <wsdl:input>
+        <wsp:Policy>
+          <wsp:PolicyReference URI="#Wssp1.2-2007-Wss1.1-X509" />
+        </wsp:Policy>
+        <soap11:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap11:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+
+  <wsdl:service name="SecurityTokenService">
+    <wsdl:port name="SecurityTokenServiceSOAP11" binding="tns:SecurityTokenServiceSOAPBinding">
+      <soap11:address location="https://services.socialsecurity.be/SecurityTokenService/v2" />
+    </wsdl:port>
+  </wsdl:service>
+
+</wsdl:definitions>
