@@ -49,5 +49,5 @@ jobs:
         with:
           app-name: 'UPrinceV5CheckInAt'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_03D58FC6F9AE45989BE01F98A828DD61 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_3B1C80A5F0BC488EB4026B2B31024F80 }}
           package: '*.jar'
