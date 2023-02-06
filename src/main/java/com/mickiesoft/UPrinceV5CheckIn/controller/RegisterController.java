@@ -31,7 +31,7 @@ public class RegisterController {
     private static RegisterPresencesRequest requestGlobal;
     private static RegisterPresencesRequest requestGlobalLimosa;
 
-    private static final URL WSDL_URL = ClassLoader.getSystemResource("wsdl/presenceregistration/v1/PresenceRegistration_v1.wsdl");
+   // private static final URL WSDL_URL = ClassLoader.getSystemResource("wsdl/presenceregistration/v1/PresenceRegistration_v1.wsdl");
 
     private DateTime date;
 
@@ -85,9 +85,9 @@ public class RegisterController {
 
         // get hours
         double hours = (dateNow.getMillis() - date.getMillis()) / 1000 / 60 / 60;
-        if (hours > 1) {
+        //if (hours > 1) {
             initProxy();
-        }
+       // }
     }
 
     private void initProxy() {

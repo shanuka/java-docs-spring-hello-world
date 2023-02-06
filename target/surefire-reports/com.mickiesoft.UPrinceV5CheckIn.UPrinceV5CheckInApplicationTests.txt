@@ -1,8 +1,0 @@
--------------------------------------------------------------------------------
-Test set: com.mickiesoft.UPrinceV5CheckIn.UPrinceV5CheckInApplicationTests
--------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.846 s <<< FAILURE! - in com.mickiesoft.UPrinceV5CheckIn.UPrinceV5CheckInApplicationTests
-contextLoads  Time elapsed: 0.006 s  <<< ERROR!
-java.lang.NoClassDefFoundError: org/springframework/beans/factory/aot/BeanRegistrationAotProcessor
-Caused by: java.lang.ClassNotFoundException: org.springframework.beans.factory.aot.BeanRegistrationAotProcessor
-
