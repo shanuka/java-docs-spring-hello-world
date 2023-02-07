@@ -39,7 +39,7 @@ public class RegisterController {
 
 
     @RequestMapping(method = RequestMethod.GET, value = "/api/registerEmployee/{inss}/{workplaceid}/{companyid}")
-    public RegisterPresencesResponse completeRegisterRequest(@PathVariable("inss") String inss, @PathVariable("workplaceid") String workplaceID, @PathVariable("companyid") String companyID)  {
+    public RegisterPresencesResponse completeRegisterRequest(@PathVariable("inss") String inss, @PathVariable("workplaceid") String workplaceID, @PathVariable("companyid") String companyID) throws BusinessError, SystemError {
        // checkTime();
 
         presenceService = new PresenceRegistrationService(WSDL_URL);
@@ -78,9 +78,12 @@ public class RegisterController {
                 System.out.println(" response = port.registerPresences(requestGlobal);");
                 response = port.registerPresences(requestGlobal);
             } catch (SystemError ex) {
-                return new RegisterPresencesResponse();
+                throw ex;
             } catch (BusinessError ex) {
-                System.out.println("Business error in the one employee registration: " + ex.toString());
+                throw ex;
+                //System.out.println("Business error in the one employee registration: " + ex.toString());
+            } catch (Exception exception){
+                throw exception;
             }
         }
         return response;
